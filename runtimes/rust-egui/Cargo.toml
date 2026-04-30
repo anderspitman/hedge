@@ -1,0 +1,33 @@
+[package]
+name = "hedgebrowser"
+version = "0.1.0"
+authors = ["Hedge Developers <hedge@apitman.com>"]
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["lib", "cdylib"]
+path = "src/lib.rs"
+name = "hedgebrowser"
+
+[[bin]]
+path = "src/main.rs"
+name = "hedgebrowser"
+
+[dependencies]
+wasmtime = "39"
+eframe = { version = "0.33", features = ["android-native-activity"] }
+winit = "0.30"
+hedge = { path = "./hedge" }
+serde = "1"
+serde_json = "1"
+#rfd = "0.15.3"
+
+[package.metadata.android]
+package = "com.apitman.hedge"
+
+[[package.metadata.android.uses_permission]]
+name = "android.permission.INTERNET"
+
+[package.metadata.android.application]
+label = "Hedge"
