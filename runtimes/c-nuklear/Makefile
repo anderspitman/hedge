@@ -2,10 +2,11 @@
 BIN = hedge
 BUILD_DIR = build
 BIN_PATH = $(BUILD_DIR)/$(BIN)
+ERI_DIR = ../../eri
 
 # Flags
 CFLAGS += -g -std=c89 -Wall -Wextra -pedantic
-CPPFLAGS += -MMD -MP
+CPPFLAGS += -I$(ERI_DIR) -DNK_IMPLEMENTATION -DNK_GLFW_GL3_IMPLEMENTATION -MMD -MP
 
 # Set STATIC_GLEW=1 to avoid a runtime libGLEW.so.* dependency.
 ifeq ($(STATIC_GLEW),1)
@@ -14,8 +15,8 @@ else
 	GLEW_LIB = -lGLEW
 endif
 
-SRC = main.c nuklear_impl.c eri_sdk.c eri_sdk_linux.c
-OBJ = $(SRC:%.c=$(BUILD_DIR)/%.o)
+SRC = main.c $(ERI_DIR)/eri_sdk.c $(ERI_DIR)/eri_sdk_linux.c
+OBJ = $(BUILD_DIR)/main.o $(BUILD_DIR)/eri_sdk.o $(BUILD_DIR)/eri_sdk_linux.o
 DEP = $(OBJ:.o=.d)
 
 ifeq ($(OS),Windows_NT)
@@ -36,6 +37,9 @@ $(BIN_PATH): $(OBJ) | $(BUILD_DIR)
 	$(CC) $(OBJ) $(CFLAGS) -o $@ $(LIBS)
 
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/%.o: $(ERI_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR):
